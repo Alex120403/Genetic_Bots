@@ -16,9 +16,6 @@ public class World implements Disposable {
 
     static Random random = new Random();
 
-    // Constants
-    static final int OPERATION_TIME = 100;
-    static final float DEFAULT_MUTATE_PERCENTS = 1/8;
 
     // Statement
     int width,height,botsCount;
@@ -29,11 +26,12 @@ public class World implements Disposable {
     int steps,sleepIterations;
     float walls,people,fire;
     WorldUpdater worldUpdater;
-    public Graph graph;
+    Graph graph;
     public  int aliveBots;
     public  Bot bestBot;
     String name;
     WorldsPanelItem link;
+    public boolean record;
 
     ArrayList<Bot> newBotsArrayList;
 
@@ -73,6 +71,7 @@ public class World implements Disposable {
             worldUpdater = wa;
             worldUpdater.setWorld(this);
         }
+        record = false;
 
 
 
@@ -202,6 +201,9 @@ public class World implements Disposable {
                 bots[i].makeStep();
                 if(bots[i].getFitnessFunc()>bestBot.getFitnessFunc()) {
                     bestBot = bots[i];
+                    if(bestBot.getFitnessFunc()>graph.bestFitnessFuncOfAllTime) {
+                        record = true;
+                    }
                 }
             }
             if(aliveBots==botsCount/8){

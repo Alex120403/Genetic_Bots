@@ -90,7 +90,7 @@ public class WorldsPanelItem implements InputObserver {
                 if(Main.getSelectedWorldID() == order) {
                     Paint.draw(rendering,X_OFFSET-27+2,Y_OFFSET-(order*(createWorld.getHeight()+6))+6+24*2);
                 }
-                if(linkedWorld.bestBot.getFitnessFunc()>linkedWorld.graph.bestFitnessFuncOfAllTime) {
+                if(Main.worlds[order].record) {
                     Paint.draw(overload,X_OFFSET-27+6,Y_OFFSET-(order*(createWorld.getHeight()+6))+4+24,14,24);
                 }
             }
@@ -111,7 +111,6 @@ public class WorldsPanelItem implements InputObserver {
     // Run if user clicks on this button
     public void click() {
         if(linkedWorld == null) {
-
             wc = new WorldCreating(this);
         }
         else {
@@ -197,6 +196,7 @@ public class WorldsPanelItem implements InputObserver {
                     linkedWorld.dispose();
                     linkedWorld = null;
                     Main.worlds[order] = null;
+                    start = false;
                     if(Main.getSelectedWorldID() == order) {
                         Main.setSelectedWorldID(-1);
                     }
