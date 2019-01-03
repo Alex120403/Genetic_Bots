@@ -178,7 +178,7 @@ public class WCStage extends Stage implements InputObserver {
      */
     @Override
     public boolean keyTyped(char character) {
-        if(wc.name.getText().length()<19 || (int)character == 8) {
+        if(wc.name.getText().length()<16 || (int)character == 8) {
             return super.keyTyped(character);
         }
         else

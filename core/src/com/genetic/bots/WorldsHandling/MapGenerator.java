@@ -48,7 +48,7 @@ public class MapGenerator {
     }
 
     private Cell[][] addWalls(Cell[][] map) {
-        int wallsToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * Config.DEGREE_OF_WALLS));
+        int wallsToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * walls));
 
         int order = 0;
         if(order<=wallsToAdd) {
@@ -68,7 +68,7 @@ public class MapGenerator {
     }
 
     private Cell[][] addHumans(Cell[][] map) {
-        int humansToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * Config.DEGREE_OF_HUMANS));
+        int humansToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * humans));
         int order = 0;
         if(order<=humansToAdd) {
             short nX;
@@ -87,7 +87,7 @@ public class MapGenerator {
     }
 
     private Cell[][] addFire(Cell[][] map) {
-        int fireToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * Config.DEGREE_OF_FIRE));
+        int fireToAdd = ((int) ((Config.MAP_WIDTH * Config.MAP_HEIGHT) * fire));
 
         int order = 0;
         if(order<=fireToAdd) {

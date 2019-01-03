@@ -19,17 +19,17 @@ public class World implements Disposable {
     // Constants
     static final int OPERATION_TIME = 100;
     static final float DEFAULT_MUTATE_PERCENTS = 1/8;
-    public static int BOTS_COUNT;
 
     // Statement
-    int width,height;
+    int width,height,botsCount;
     BotFactory botFactory;
     Bot[] bots;
     Cell[][] map;
     BotState botState;
     int steps,sleepIterations;
+    float walls,people,fire;
     WorldUpdater worldUpdater;
-    static Graph graph;
+    Graph graph;
     public  int aliveBots;
     public  Bot bestBot;
     String name;
@@ -37,34 +37,44 @@ public class World implements Disposable {
 
     ArrayList<Bot> newBotsArrayList;
 
-    static MapGenerator generator;
+    MapGenerator generator;
 
     @Override
     public void dispose() {
         //graph.dispose();
     }
 
-    public World(Bot[] bots, int botsCount, WorldsPanelItem toLink,WorldUpdater wa) {
+    public World(Bot[] bots, int botsCount, WorldsPanelItem toLink,WorldUpdater wa,float walls,float people,float fire,String name,Graph graph) {
+        this.walls = walls;
+        this.people = people;
+        this.fire = fire;
+        this.name = name;
+        this.botsCount = botsCount;
+
         if(bots == null) {
-            BOTS_COUNT = botsCount;
             botFactory = new BotFactory();
-            generator = new MapGenerator(Config.DEGREE_OF_WALLS,Config.DEGREE_OF_HUMANS,Config.DEGREE_OF_FIRE);
+            generator = new MapGenerator(walls,people,fire);
             map = generator.generateMap();
-            this.bots = generateStarterBots(BOTS_COUNT);
+            this.bots = generateStarterBots(botsCount);
             //botState = new BotState(this.bots);
             addBotsToMap(map, this.bots);
-            graph = new Graph();
+            this.graph = new Graph();
             worldUpdater = new WorldUpdater(this);
             worldUpdater.start();
         }
         else {
+            generator = new MapGenerator(walls,people,fire);
             map = generator.generateMap();
             this.bots = bots;
+
+            this.graph = graph;
             addBotsToMap(map, this.bots);
             //botState = new BotState(bots);
             worldUpdater = wa;
             worldUpdater.setWorld(this);
         }
+
+
 
         link = toLink;
 
@@ -73,7 +83,7 @@ public class World implements Disposable {
         }
 
 
-        aliveBots = BOTS_COUNT;
+        aliveBots = botsCount;
         bestBot = this.bots[0];
     }
 
@@ -132,10 +142,10 @@ public class World implements Disposable {
 
     synchronized void nextPopulation() {
         BotFactory botFactory = new BotFactory();
-        if(newBotsArrayList == null || true) {
+        if(newBotsArrayList == null) {
             copyBestBots();
         }
-        if(Main.getSelectedWorldID() == link.getOrder()) graph.add((float)bots[0].getFitnessFunc());
+        graph.add((float)bots[0].getFitnessFunc());
         for (byte i = 0; i < bots.length; i++) {
             bots[i] = botFactory.generateByChromosome(newBotsArrayList.get(i));
             if(i%8==0) {
@@ -148,7 +158,7 @@ public class World implements Disposable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Main.worlds[link.getOrder()] = new World(bots,BOTS_COUNT,link,worldUpdater);
+        Main.worlds[link.getOrder()] = new World(bots,botsCount,link,worldUpdater,walls,people,fire,name,graph);
 
     }
 
@@ -194,12 +204,12 @@ public class World implements Disposable {
                     bestBot = bots[i];
                 }
             }
-            if(aliveBots==Config.BOTS_COUNT/8 && false){
+            if(aliveBots==botsCount/8){
                 copyBestBots();
             }
             else if(aliveBots < 1) {
                 nextPopulation();
-                aliveBots = BOTS_COUNT;
+                aliveBots = botsCount;
             }
 
         }

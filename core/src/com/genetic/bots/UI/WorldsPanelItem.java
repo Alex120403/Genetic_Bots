@@ -9,8 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.genetic.bots.*;
 import com.genetic.bots.WorldsHandling.World;
 
+import java.util.Random;
+
 public class WorldsPanelItem implements InputObserver {
     private static final Texture createWorld, world, flash,startIcon,pause,delete;
+    private Texture icon;
     private int order,populations;
     private long bestFitnessFuncOfAllTime;
     private boolean visible,flashing,click,start;
@@ -29,19 +32,20 @@ public class WorldsPanelItem implements InputObserver {
         startIcon = new Texture(Gdx.files.internal("start.png"));
         pause = new Texture(Gdx.files.internal("pause.png"));
         delete = new Texture(Gdx.files.internal("delete.png"));
-
     }
 
     public WorldsPanelItem(int order) {
         this.order = order;
 
+        icon = new Texture(Gdx.files.internal("wi"+(order)+".png"));
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.color = Color.DARK_GRAY;
         parameter.size = 18;
+        parameter.color = Color.BLACK;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("9522.ttf"));
         nameFont = generator.generateFont(parameter);
         parameter.size = 14;
+        parameter.color = Color.DARK_GRAY;
         stateFont = generator.generateFont(parameter);
         generator.dispose();
 
@@ -53,7 +57,9 @@ public class WorldsPanelItem implements InputObserver {
         if (wc != null) {
             wc.render();
             if(wc.created) {
-                Main.worlds[order] = new World(null,(int)wc.botsCount.getValue(),this,null);
+                Main.worlds[order] = new World(null,(int)wc.botsCount.getValue(),this,null,
+                        wc.wallsDegree.getValue(),wc.humansDegree.getValue(),wc.fireDegree.getValue(),wc.name.getText(),
+                        null);
                 linkedWorld = Main.worlds[order];
                 bestFitnessFuncOfAllTime = 0;
                 populations = 0;
@@ -75,8 +81,9 @@ public class WorldsPanelItem implements InputObserver {
                 }
                 else {
                     Paint.draw(startIcon,X_OFFSET+createWorld.getWidth()+4,Y_OFFSET-(order*(createWorld.getHeight()+6))+createWorld.getHeight()/2+4);
-
                 }
+                Paint.draw(icon,X_OFFSET+7,Y_OFFSET-(order*(createWorld.getHeight()+6))+12);
+
             }
             if (flashing) {
                 Paint.draw(flash, X_OFFSET, Y_OFFSET - (order * (flash.getHeight() + 6)));

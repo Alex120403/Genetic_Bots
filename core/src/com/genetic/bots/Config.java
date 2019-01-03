@@ -2,7 +2,7 @@ package com.genetic.bots;
 
 public class Config {
 
-    public static final int DEFAULT_SPEED = 11;
+    public static final int DEFAULT_SPEED = 4;
     public static int SPEED = DEFAULT_SPEED;
 
     private static final int DEFAULT_BOTS_COUNT = 32;

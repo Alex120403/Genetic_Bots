@@ -50,7 +50,7 @@ public class  WorldCreating implements InputObserver {
         nameLabel.setPosition(x+3,name.getY()+name.getHeight());
         stage.addActor(nameLabel);
 
-        botsCount = new Slider(8,128,8,false,skin);
+        botsCount = new Slider(8,96,8,false,skin);
         botsCount.setWidth(114);
         botsCount.setY(y+53);
         botsCount.setX(x+10);
@@ -142,7 +142,7 @@ public class  WorldCreating implements InputObserver {
         botsCountMin.setY(botsCount.getY());
         botsCountMin.setX(botsCount.getX()-botsCountMin.getWidth());
         stage.addActor(botsCountMin);
-        botsCountMax = new Label("128",skin);
+        botsCountMax = new Label("96",skin);
         botsCountMax.setY(botsCount.getY());
         botsCountMax.setX(botsCount.getX()+botsCount.getWidth());
         stage.addActor(botsCountMax);
