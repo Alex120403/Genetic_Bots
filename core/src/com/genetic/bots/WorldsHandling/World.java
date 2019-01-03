@@ -29,7 +29,7 @@ public class World implements Disposable {
     int steps,sleepIterations;
     float walls,people,fire;
     WorldUpdater worldUpdater;
-    Graph graph;
+    public Graph graph;
     public  int aliveBots;
     public  Bot bestBot;
     String name;
@@ -174,7 +174,7 @@ public class World implements Disposable {
             }
         }
         //botState.render();
-        graph.render();
+        graph.render(bestBot.getFitnessFunc());
 
 
 

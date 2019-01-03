@@ -12,11 +12,12 @@ import com.genetic.bots.WorldsHandling.World;
 import java.util.Random;
 
 public class WorldsPanelItem implements InputObserver {
-    private static final Texture createWorld, world, flash,startIcon,pause,delete;
+    private static final Texture createWorld, world, flash,startIcon,pause,delete,drawHint,overload,rendering;
     private Texture icon;
     private int order,populations;
     private long bestFitnessFuncOfAllTime;
     private boolean visible,flashing,click,start;
+    private static boolean wasSelected;
     private BitmapFont nameFont, stateFont;
     private World linkedWorld;
     int Y_OFFSET = 570;
@@ -32,6 +33,9 @@ public class WorldsPanelItem implements InputObserver {
         startIcon = new Texture(Gdx.files.internal("start.png"));
         pause = new Texture(Gdx.files.internal("pause.png"));
         delete = new Texture(Gdx.files.internal("delete.png"));
+        drawHint = new Texture(Gdx.files.internal("drawHint.png"));
+        overload = new Texture(Gdx.files.internal("overloaded.png"));
+        rendering = new Texture(Gdx.files.internal("rendering.png"));
     }
 
     public WorldsPanelItem(int order) {
@@ -83,9 +87,17 @@ public class WorldsPanelItem implements InputObserver {
                     Paint.draw(startIcon,X_OFFSET+createWorld.getWidth()+4,Y_OFFSET-(order*(createWorld.getHeight()+6))+createWorld.getHeight()/2+4);
                 }
                 Paint.draw(icon,X_OFFSET+7,Y_OFFSET-(order*(createWorld.getHeight()+6))+12);
-
+                if(Main.getSelectedWorldID() == order) {
+                    Paint.draw(rendering,X_OFFSET-27+2,Y_OFFSET-(order*(createWorld.getHeight()+6))+6+24*2);
+                }
+                if(linkedWorld.bestBot.getFitnessFunc()>linkedWorld.graph.bestFitnessFuncOfAllTime) {
+                    Paint.draw(overload,X_OFFSET-27+6,Y_OFFSET-(order*(createWorld.getHeight()+6))+4+24,14,24);
+                }
             }
             if (flashing) {
+                if(linkedWorld!=null && Main.getSelectedWorldID() != order && !wasSelected) {
+                    Paint.draw(drawHint, X_OFFSET+createWorld.getWidth()-30, Y_OFFSET - (order * (flash.getHeight() + 6))+3);
+                }
                 Paint.draw(flash, X_OFFSET, Y_OFFSET - (order * (flash.getHeight() + 6)));
             }
             if (click) {
@@ -103,6 +115,7 @@ public class WorldsPanelItem implements InputObserver {
             wc = new WorldCreating(this);
         }
         else {
+            wasSelected = true;
             Main.setSelectedWorldID(order);
         }
     }

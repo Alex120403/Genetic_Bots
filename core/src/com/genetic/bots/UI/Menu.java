@@ -27,22 +27,20 @@ public class Menu implements Disposable {
         stage.dispose();
         hint.dispose();
     }
-
     public Menu(final Main main) {
         stage = new UIStage();
         hint = new Texture(Gdx.files.internal("previewHint.png"));
         this.main = main;
         Skin skin = new Skin(Gdx.files.internal("data/skin/cloud-form-ui.json"));
         speed = new Slider(0,11,1,false,skin);
-        speed.setX(500);
-        speed.setY(10);
+        speed.setX(20);
+        speed.setY(20);
 
         speed.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
                 if(speed.getValue() == 11 && Config.IS_DEVELOPER_MODE_ENABLED) {
-                    speedLabel.setText("Speed: "+(int)speed.getValue()+"  WARNING: Exception can be thrown!\nThis mode requires a lot of memory");
-                    speedLabel.setY(speed.getY()+speed.getHeight()+speedLabel.getHeight()/2);
+                    speedLabel.setText("Speed: "+(int)speed.getValue());
                     Config.SPEED = (int) Math.pow(2, (int) speed.getValue());
                 }
                 else if(speed.getValue()!=11){
@@ -60,31 +58,9 @@ public class Menu implements Disposable {
         stage.addActor(speed);
         stage.addActor(speedLabel);
         javaHeap = new Label("Java heap: ???",skin);
-        javaHeap.setX(500);
-        javaHeap.setY(50);
+        javaHeap.setX(20);
+        javaHeap.setY(60);
         stage.addActor(javaHeap);
-
-        start = new Button(skin);
-        start.add("Start");
-        start.addListener(new EventListener() {
-            @Override
-            public boolean handle(Event event) {
-                if(!main.isStarted()) {
-                    main.start();
-                }
-                return false;
-            }
-        });
-        start.setX(100);
-        //stage.addActor(start);
-        pause = new Button(skin);
-        pause.add("Pause");
-       // stage.addActor(pause);
-        pause.setX(200);
-        stop = new Button(skin);
-        stop.add("Stop");
-        stop.setX(300);
-       // stage.addActor(stop);
 
     }
 
@@ -92,14 +68,8 @@ public class Menu implements Disposable {
     public void render() {
 
         stage.draw();
-        if(!main.isStarted())Paint.draw(hint,360,300);
-        /*if(speed.getValue() == 11 && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-            speed.setValue(10);
-            Config.SPEED = 1024;
-            speedLabel.setY(speed.getY()+speed.getHeight());
-        }*/
         timer++;
-        if(timer>=6) {
+        if(timer>=60) {
             timer = 0;
             javaHeap.setText("Java heap: "+Gdx.app.getJavaHeap()/1024/1024+"Mb");
         }

@@ -23,9 +23,12 @@ public class WorldUpdater extends Thread {
                 world.update();
                 Thread.sleep(1024/Config.SPEED);
             }
+        } catch (NullPointerException e) {
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void testWait() {

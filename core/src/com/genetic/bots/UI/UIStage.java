@@ -35,7 +35,7 @@ public class UIStage extends Stage implements InputObserver {
     @Override
     public void draw() {
         if(mouseY<Paint.Y_ALIGNMENT || true) {
-            Paint.draw(white, 0, 0, 1135, Paint.Y_ALIGNMENT);
+            Paint.draw(white, -500, 0, 1135, Paint.Y_ALIGNMENT);
             super.draw();
         }
     }

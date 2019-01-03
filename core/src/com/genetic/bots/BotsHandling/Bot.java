@@ -115,10 +115,6 @@ public class Bot implements Comparable<Bot>, Serializable {
       which have an information about next operation.
     */
     public void makeStep() {
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            System.out.println(name+":\nRotation: "+rotation+"  Operation flag: "+operationFlag+" " +
-                    " Health: "+health+"  Fitness: "+getFitnessFuncString());
-        }
         operationFlag = operationFlag%64;
         rotation = (short)(rotation%64);
         if((health)<=0){

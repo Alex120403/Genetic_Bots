@@ -94,9 +94,9 @@ public class Paint implements Disposable, InputObserver {
 
     }
 
-    public static void drawGraphElement(Texture graphElement, int x,int y,float value) {
+    public static void drawGraphElement(Texture graphElement, int x,int y,int width,float value) {
         batch.begin();
-        batch.draw(graphElement,Graph.X+x+1,y,1,value*Graph.HEIGHT);
+        batch.draw(graphElement,Graph.X+x+1,y,width,value*Graph.HEIGHT);
         batch.end();
     }
 
