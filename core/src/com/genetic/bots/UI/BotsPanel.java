@@ -1,6 +1,7 @@
 package com.genetic.bots.UI;
 
 public class BotsPanel extends Panel {
+    BotsList bl;
     public BotsPanel(PanelsHandler handler) {
         super(handler);
     }
@@ -14,12 +15,13 @@ public class BotsPanel extends Panel {
     @Override
     void init() {
         button = new SelectButton(this,2,"BotsSelectButton.png");
+        bl = new BotsList(null);
     }
 
     // Draw panel content
     @Override
     void render() {
-
+       bl.render();
     }
 
     @Override

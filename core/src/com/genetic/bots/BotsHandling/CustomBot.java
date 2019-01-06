@@ -4,10 +4,14 @@ public class CustomBot extends Bot {
     boolean canMutate;
 
     // Statistic
-    private long allSavedPepole, allExtinguishedFire;
+    public int allSavedPepole, allExtinguishedFire;
+    //public int id;
 
-    protected CustomBot(Gene[] genes) {
+    protected CustomBot(Gene[] genes,String name,int sp,int ef) {
         super(genes);
+        this.name = name;
+        allSavedPepole = sp;
+        allExtinguishedFire = ef;
     }
 
     @Override

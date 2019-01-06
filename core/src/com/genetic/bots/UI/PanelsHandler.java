@@ -1,8 +1,11 @@
 package com.genetic.bots.UI;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.genetic.bots.InputHandler;
 import com.genetic.bots.InputObserver;
 import com.genetic.bots.Main;
+import com.genetic.bots.Paint;
 
 public class PanelsHandler implements InputObserver {   // Main panels class
     private Panel worldsPanel;
@@ -10,7 +13,8 @@ public class PanelsHandler implements InputObserver {   // Main panels class
     private Panel botsPanel;
     private Panel selectedPanel;
     private Main main;
-
+    private Texture header;
+//Todo dispose
     public PanelsHandler(Main main) {
         this.main = main;
         InputHandler.addToObservers(this); // Getting input events
@@ -19,14 +23,18 @@ public class PanelsHandler implements InputObserver {   // Main panels class
         worldStatePanel = new WorldStatePanel(this);
         botsPanel = new BotsPanel(this);
         selectedPanel = worldsPanel;
+        header = new Texture(Gdx.files.internal("header.png"));
     }
 
     // Draw all buttons and render() current panel
     public void render() {
+        selectedPanel.render();
+        if(selectedPanel.equals(botsPanel)) {
+            Paint.draw(header,0,640);
+        }
         worldsPanel.drawButton();
         worldStatePanel.drawButton();
         botsPanel.drawButton();
-        selectedPanel.render();
         selectedPanel.drawButton();
     }
 

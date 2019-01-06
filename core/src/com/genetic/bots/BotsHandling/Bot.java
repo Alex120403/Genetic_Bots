@@ -62,6 +62,15 @@ public class Bot implements Comparable<Bot>, Serializable {
         this.y = y;
     }
 
+    public String getChromosomeForSQL() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < genes.length; i++) {
+            stringBuilder.append(genes[i].getValue()+",");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        return stringBuilder.toString();
+    }
+
     // Returns x posotionon in current world's map
     public short getX() {
         return x;
@@ -115,7 +124,8 @@ public class Bot implements Comparable<Bot>, Serializable {
       which have an information about next operation.
     */
     public void makeStep() {
-        operationFlag = operationFlag%64;
+        //TODO по 2 одинаковых бота(исправить)
+        operationFlag = operationFlag%genes.length;
         rotation = (short)(rotation%64);
         if((health)<=0){
             die(x,y);
@@ -143,7 +153,7 @@ public class Bot implements Comparable<Bot>, Serializable {
 
 
     boolean doOperation(int operationId) {
-
+        operationFlag = operationFlag%genes.length;
         boolean isStepped = false;
         int deltaOperationFlag = 0;
         byte vectorX = 0, vectorY = 0;

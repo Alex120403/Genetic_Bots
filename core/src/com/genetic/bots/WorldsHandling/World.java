@@ -9,6 +9,7 @@ import com.genetic.bots.UI.BotState;
 import com.genetic.bots.UI.ChromosomeDisplay;
 import com.genetic.bots.UI.WorldsPanelItem;
 
+import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -48,6 +49,8 @@ public class World implements Disposable {
         this.fire = fire;
         this.name = name;
         this.botsCount = botsCount;
+
+
 
         if(bots == null) {
             botFactory = new BotFactory();

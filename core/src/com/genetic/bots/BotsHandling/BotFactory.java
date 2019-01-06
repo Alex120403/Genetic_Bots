@@ -25,6 +25,24 @@ public class BotFactory {
         return new Bot(genes);
     }
 
+    private Gene[] parseChromosome(String c) {
+        Gene[] res;
+        String[] genes = c.split(",");
+        res = new Gene[genes.length];
+        for (int i = 0; i < genes.length; i++) {
+            res[i] = new Gene(Byte.parseByte(genes[i]));
+        }
+        return res;
+    }
+
+    public CustomBot createCustomBot(BotStatistics bs) {
+        CustomBot res = new CustomBot(parseChromosome(bs.chromosome),bs.name,bs.savedPeople,bs.extinguishedFire);
+        res.allSavedPepole = bs.savedPeople;
+        res.allExtinguishedFire = bs.extinguishedFire;
+        //res.id = bs.id;
+        return res;
+    }
+
     // Changes [1 to ?] bot's genes to random values
     public Bot mutate(Bot bot,float chanceToMutateAnotherOneGene) {
         do {
