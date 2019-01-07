@@ -13,7 +13,10 @@ public class TextFormat {
      * @return a String representing the number n formatted in a cool looking way.
      */
     public static String coolFormat(long n) {
-        if(n>1000000) {
+        if(n>1000000000) {
+            return n/1000000000+"."+((n%1000000000)+"").charAt(0)+c[2];
+        }
+        else if(n>1000000) {
             return n/1000000+"."+((n%1000000)+"").charAt(0)+c[1];
         }
         else if(n>1000) {

@@ -63,7 +63,7 @@ public class WorldsPanelItem implements InputObserver {
             if(wc.created) {
                 Main.worlds[order] = new World(null,(int)wc.botsCount.getValue(),this,null,
                         wc.wallsDegree.getValue(),wc.humansDegree.getValue(),wc.fireDegree.getValue(),wc.name.getText(),
-                        null);
+                        null,null);
                 linkedWorld = Main.worlds[order];
                 bestFitnessFuncOfAllTime = 0;
                 populations = 0;

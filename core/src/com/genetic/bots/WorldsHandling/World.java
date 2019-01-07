@@ -43,7 +43,7 @@ public class World implements Disposable {
         //graph.dispose();
     }
 
-    public World(Bot[] bots, int botsCount, WorldsPanelItem toLink,WorldUpdater wa,float walls,float people,float fire,String name,Graph graph) {
+    public World(Bot[] bots, int botsCount, WorldsPanelItem toLink,WorldUpdater wa,float walls,float people,float fire,String name,Graph graph,Cell[][] oldMap) {
         this.walls = walls;
         this.people = people;
         this.fire = fire;
@@ -64,8 +64,15 @@ public class World implements Disposable {
             worldUpdater.start();
         }
         else {
-            generator = new MapGenerator(walls,people,fire);
-            map = generator.generateMap();
+            //generator = new MapGenerator(walls,people,fire);
+            for (int i = 0; i < oldMap.length; i++) {
+                for (int j = 0; j < 24; j++) {
+                    if(oldMap[i][j].getContent() == Cell.TYPE_BOT) {
+                        oldMap[i][j].removeBot();
+                    }
+                }
+            }
+            map = oldMap;
             this.bots = bots;
 
             this.graph = graph;
@@ -160,7 +167,7 @@ public class World implements Disposable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Main.worlds[link.getOrder()] = new World(bots,botsCount,link,worldUpdater,walls,people,fire,name,graph);
+        Main.worlds[link.getOrder()] = new World(bots,botsCount,link,worldUpdater,walls,people,fire,name,graph,map);
 
     }
 

@@ -125,7 +125,7 @@ public class Bot implements Comparable<Bot>, Serializable {
     */
     public void makeStep() {
         //TODO по 2 одинаковых бота(исправить)
-        operationFlag = operationFlag%genes.length;
+        operationFlag = 0;//operationFlag%genes.length;
         rotation = (short)(rotation%64);
         if((health)<=0){
             die(x,y);
