@@ -1,7 +1,12 @@
 package com.genetic.bots.UI;
 
+import com.genetic.bots.Main;
+
+import java.sql.SQLException;
+import java.util.Arrays;
+
 public class BotsPanel extends Panel {
-    BotsList bl;
+    BotsList botsList;
     public BotsPanel(PanelsHandler handler) {
         super(handler);
     }
@@ -15,13 +20,37 @@ public class BotsPanel extends Panel {
     @Override
     void init() {
         button = new SelectButton(this,2,"BotsSelectButton.png");
-        bl = new BotsList(null);
+    }
+
+    @Override
+    void select() {
+        super.select();
+        botsList.setItems(Main.worlds[Main.getSelectedWorldID()].getBots());
+    }
+
+    public void setBotsList(BotsList botsList) {
+        this.botsList = botsList;
+    }
+
+    public BotsList getBotsList() {
+        return botsList;
     }
 
     // Draw panel content
     @Override
     void render() {
-       bl.render();
+        if (botsList != null) {
+            botsList.render();
+        }
+        else {
+            if(Main.getSelectedWorldID()!=-1) {
+                try {
+                    botsList = new BotsList(Main.worlds[Main.getSelectedWorldID()].getBots());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

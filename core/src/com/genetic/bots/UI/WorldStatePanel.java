@@ -24,13 +24,13 @@ public class WorldStatePanel extends Panel {
     void render() {
         if(Main.getSelectedWorldID() != -1) {
             if (chromosomeDisplay == null) {
-                chromosomeDisplay = new ChromosomeDisplay(Main.worlds[Main.getSelectedWorldID()].getBots()[0].getChromosome());
+                chromosomeDisplay = new ChromosomeDisplay(Main.worlds[Main.getSelectedWorldID()].getBots()[0].getChromosome().content);
             }
 
             chromosomeDisplay.drawFlag();
             chromosomeDisplay.render();
             chromosomeDisplay.botInfo.setBot(Main.worlds[Main.getSelectedWorldID()].bestBot);
-            chromosomeDisplay.setChromosome(Main.worlds[Main.getSelectedWorldID()].bestBot.getChromosome());
+            chromosomeDisplay.setChromosome(Main.worlds[Main.getSelectedWorldID()].bestBot.getChromosome().content);
         }
     }
     @Override

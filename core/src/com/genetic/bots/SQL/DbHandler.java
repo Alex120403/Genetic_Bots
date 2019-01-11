@@ -1,17 +1,16 @@
 package com.genetic.bots.SQL;
 
-import com.genetic.bots.BotsHandling.BotFactory;
-import com.genetic.bots.BotsHandling.BotStatistics;
-import com.genetic.bots.BotsHandling.CustomBot;
+import com.genetic.bots.BotsHandling.*;
 import org.sqlite.JDBC;
 
+import java.io.File;
 import java.sql.*;
 import java.util.*;
 
 public class DbHandler {
 
     // Константа, в которой хранится адрес подключения
-    private static final String CON_STR = "jdbc:sqlite:C:/Users/Alex/Documents/GitHub/GeneticBots/core/assets/db.db";
+    private static String CON_STR = "";
 
     // Используем шаблон одиночка, чтобы не плодить множество
     // экземпляров класса DbHandler
@@ -29,31 +28,30 @@ public class DbHandler {
     private DbHandler() throws SQLException {
         // Регистрируем драйвер, с которым будем работать
         // в нашем случае Sqlite
+        File file = new File("chromosomes.db");
+        System.out.println(file.exists());
+        CON_STR = "jdbc:sqlite:C:/Users/Alex/Documents/GitHub/GeneticBots/core/assets/chromosomes.db";
         DriverManager.registerDriver(new JDBC());
         // Выполняем подключение к базе данных
         this.connection = DriverManager.getConnection(CON_STR);
     }
 
-    public List<CustomBot> getAllProducts() {
+    public List<Chromosome> getAllProducts() {
 
         // Statement используется для того, чтобы выполнить sql-запрос
         try {
             Statement statement = this.connection.createStatement();
             // В данный список будем загружать наши продукты, полученные из БД
-            List<CustomBot> products = new ArrayList<CustomBot>();
+            List<Chromosome> products = new ArrayList<Chromosome>();
             // В resultSet будет храниться результат нашего запроса,
             // который выполняется командой statement.executeQuery()
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM bots");
+            ResultSet resultSet = statement.executeQuery("SELECT DISTINCT name, chromosome FROM bots");
             // Проходимся по нашему resultSet и заносим данные в products
             BotFactory bf = new BotFactory();
             while (resultSet.next()) {
-               products.add(bf.createCustomBot(new BotStatistics(resultSet.getInt("id"),
-                       resultSet.getInt("rescued_people"),
-                       resultSet.getInt("extinguished_fire"),
-                       resultSet.getString("chromosome"),
-                       resultSet.getString("name"))));
+                Gene[] genes = bf.parseChromosome(resultSet.getString("chromosome"));
+                products.add(new Chromosome(genes,resultSet.getString("name")));
             }
-            // Возвращаем наш список
             return products;
 
         } catch (SQLException e) {
@@ -64,18 +62,16 @@ public class DbHandler {
     }
 
     // Добавление продукта в БД
-    public void addBot(CustomBot bot) {
+    public void addBot(Bot bot) {
         //deleteProduct(5);
         // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
         try {
             PreparedStatement statement = this.connection.prepareStatement(
-                    "INSERT INTO bots(`name`, `chromosome`,`rescued_people`,`extinguished_fire`) " +
-                            "VALUES(?, ?, ?, ?)");
+                    "INSERT INTO bots(`name`, `chromosome`) " +
+                            "VALUES(?, ?)");
             //statement.setObject(1, bot.id);
             statement.setObject(1, bot.getName());
             statement.setObject(2, bot.getChromosomeForSQL());
-            statement.setObject(3, bot.allSavedPepole);
-            statement.setObject(4, bot.allExtinguishedFire);
             // Выполняем запрос
             statement.execute();
         } catch (SQLException e) {

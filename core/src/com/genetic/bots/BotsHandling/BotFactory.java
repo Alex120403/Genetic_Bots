@@ -22,24 +22,16 @@ public class BotFactory {
             genes[i] = new Gene((byte) random.nextInt(64));
         }
 
-        return new Bot(genes);
+        return new Bot(new Chromosome(genes,"Default"));
     }
 
-    private Gene[] parseChromosome(String c) {
+     public Gene[] parseChromosome(String c) {
         Gene[] res;
         String[] genes = c.split(",");
         res = new Gene[genes.length];
         for (int i = 0; i < genes.length; i++) {
             res[i] = new Gene(Byte.parseByte(genes[i]));
         }
-        return res;
-    }
-
-    public CustomBot createCustomBot(BotStatistics bs) {
-        CustomBot res = new CustomBot(parseChromosome(bs.chromosome),bs.name,bs.savedPeople,bs.extinguishedFire);
-        res.allSavedPepole = bs.savedPeople;
-        res.allExtinguishedFire = bs.extinguishedFire;
-        //res.id = bs.id;
         return res;
     }
 
@@ -53,12 +45,12 @@ public class BotFactory {
     }
 
     // Creation new bot with cloned chromosome of @param bot
-    public Bot generateByChromosome(Bot bot) {
-        return new Bot(bot.getChromosome().clone());
+    public Bot generateByBotsChromosome(Bot bot) {
+        return new Bot(new Chromosome(bot.getChromosome().content.clone(),"Default"));
     }
 
-    public void saveBot(CustomBot bot) {
-
+    public Bot generateByChromosome(Chromosome chromosome) {
+        return new Bot(chromosome);
     }
 
 }

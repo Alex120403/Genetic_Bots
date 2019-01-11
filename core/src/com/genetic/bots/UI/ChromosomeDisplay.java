@@ -12,9 +12,11 @@ import com.genetic.bots.Paint;
 import com.genetic.bots.WorldsHandling.Cell;
 import com.genetic.bots.WorldsHandling.World;
 
+import java.util.Iterator;
+
 
 public class ChromosomeDisplay implements Disposable {
-    private static final int X_ALIGNMENT = 5,Y_ALIGNMENT = 470;
+    private static final int X_ALIGNMENT = 5,Y_ALIGNMENT = 640;
 
     private Gene[] chromosome;
     private String[] labels;
@@ -51,6 +53,7 @@ public class ChromosomeDisplay implements Disposable {
 
     // Refreshes all labels (sets new text based on new chromosome)
     private void refreshLabels() {
+        labels = new String[chromosome.length];
         for (int i = 0; i < labels.length; i++) {
             labels[i]=chromosome[i].getValue()+"";
         }
@@ -65,20 +68,17 @@ public class ChromosomeDisplay implements Disposable {
     // Draw current chromosome content
     public void render() {
         botInfo.render();
-        for (int i = 0; i < Math.sqrt(chromosome.length); i++) {
-            for (int j = 0; j < Math.sqrt(chromosome.length); j++) {
-                Paint.draw(box, X_ALIGNMENT + i * Cell.CELL_SIZE, Y_ALIGNMENT + j * Cell.CELL_SIZE);
+        for (int i = 0; i < chromosome.length/8; i++) { // Rows
+            for (int j = 0; j < 8; j++) {
+                Paint.drawText(font,labels[i*8+j],X_ALIGNMENT+j*Cell.CELL_SIZE+7,Y_ALIGNMENT-i*Cell.CELL_SIZE);
+                Paint.draw(box, X_ALIGNMENT+j*Cell.CELL_SIZE+3,Y_ALIGNMENT-i*Cell.CELL_SIZE-20);
             }
         }
-
-        for (int i = 0; i < labels.length; i++) {
-            Paint.drawText(font,labels[i],X_ALIGNMENT+ ((((int) (i % Math.sqrt(labels.length))))*(Cell.CELL_SIZE+0.1f))+27-Cell.CELL_SIZE,Y_ALIGNMENT+ ((7-((int) (i / Math.sqrt(labels.length))))*(Cell.CELL_SIZE+0.1f))+16);
-        }
-
     }
 
     // Lights current bot's gene
     public void drawFlag() {
-        Paint.draw(flag,X_ALIGNMENT + (7-(Main.worlds[Main.getSelectedWorldID()].bestBot.operationFlag%8)) * Cell.CELL_SIZE, Y_ALIGNMENT + (7-((Main.worlds[Main.getSelectedWorldID()].bestBot.operationFlag%64)/8)) * Cell.CELL_SIZE);
+        int of = (Main.worlds[Main.getSelectedWorldID()].bestBot.getOperationFlag())%Main.worlds[Main.getSelectedWorldID()].bestBot.getChromosome().length;
+        Paint.draw(flag, X_ALIGNMENT+(of%8)*Cell.CELL_SIZE+3,Y_ALIGNMENT-(of/8)*Cell.CELL_SIZE-20);
     }
 }

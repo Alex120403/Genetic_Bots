@@ -5,10 +5,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.genetic.bots.*;
 import com.genetic.bots.BotsHandling.Bot;
 import com.genetic.bots.BotsHandling.BotFactory;
-import com.genetic.bots.UI.BotState;
-import com.genetic.bots.UI.ChromosomeDisplay;
-import com.genetic.bots.UI.WorldsPanelItem;
+import com.genetic.bots.UI.*;
 
+import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Random;
@@ -82,9 +81,6 @@ public class World implements Disposable {
             worldUpdater.setWorld(this);
         }
         record = false;
-
-
-
         link = toLink;
 
         for (int i = 0; i < this.bots.length; i++) {
@@ -110,6 +106,7 @@ public class World implements Disposable {
     public Cell getCell(int x, int y) {
         return map[x][y];
     }
+
 
     public void addRandomFire() {
         byte rX;
@@ -156,7 +153,7 @@ public class World implements Disposable {
         }
         graph.add((float)bots[0].getFitnessFunc());
         for (byte i = 0; i < bots.length; i++) {
-            bots[i] = botFactory.generateByChromosome(newBotsArrayList.get(i));
+            bots[i] = botFactory.generateByBotsChromosome(newBotsArrayList.get(i));
             if(i%8==0) {
                 botFactory.mutate(bots[i],Config.CHANCE_TO_MUTATE_ANOTHER_ONE_GENE);
             }

@@ -2,15 +2,18 @@ package com.genetic.bots.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.genetic.bots.BotsHandling.Bot;
-import com.genetic.bots.BotsHandling.CustomBot;
+import com.genetic.bots.BotsHandling.Chromosome;
 import com.genetic.bots.InputHandler;
 import com.genetic.bots.InputObserver;
+import com.genetic.bots.Main;
 import com.genetic.bots.SQL.DbHandler;
 
 import java.sql.SQLException;
@@ -19,100 +22,173 @@ import java.util.List;
 public class BotsList implements Disposable, InputObserver {
     private BotsListItem[] items;
     static Skin skin = new Skin(Gdx.files.internal("data/skin/cloud-form-ui.json"));
-
-    private static final String reallyLongString = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n"
-            + "This\nIs\nA\nReally\nLong\nString\nThat\nHas\nLots\nOf\nLines\nAnd\nRepeats.\n";
-
+    private static final int X = -490, Y = 145;
     private Stage stage;
-    private ScrollPane scroll;
-    private Table table,container;
-    Label label;
+    private SelectBox<Show> box;
+    private static final Color LIGHT_CYAN = new Color(0.89803922f,0.94901961f,1,0.9f),
+                               SELECTED = Color.WHITE;
+    private int choosedBotIndex = -1;
+    private Table scrollTable = new Table();
+    final Button setChromosome = new Button(skin);
+    final Button confirmSettingChromosome = new Button(skin);
+    final Button saveBot = new Button(skin);
+    private Bot[] bots;
+    private byte choicedOption;
 
+    public static final byte NOTHING = -1;
+    public static final byte SET_CHROMOSOME = 0;
+    public static final byte SAVE = 1;
 
-    public BotsList(Bot[] bots) {
-
+    public BotsList(final Bot[] bots) throws SQLException {
         this.stage = new Stage();
         InputHandler.addToObservers(this);
 
-        final Label text = new Label(reallyLongString, skin);
-       // text.setAlignment(Align.center);
-      //  text.setWrap(true);
-        final Label text2 = new Label("This is a short string!", skin);
-       // text2.setAlignment(Align.center);
-       // text2.setWrap(true);
-        final Label text3 = new Label(reallyLongString, skin);
-       // text3.setAlignment(Align.center);
-        //text3.setWrap(true);
-        List<CustomBot> customBotList = null;
-        try {
-            customBotList = DbHandler.getInstance().getAllProducts();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        final Table scrollTable = new Table();
-        Label[] rows = new Label[customBotList.size()];
-        for (int i = 0; i < 12; i++) {
-            scrollTable.add(new Label("",skin));
-            scrollTable.row();
+        choicedOption = NOTHING;
+
+        final List<Chromosome> chromosomesList  = DbHandler.getInstance().getAllProducts();
+
+        Show[] chromosomes = new Show[chromosomesList.size()];
+        for (int i = 0; i < chromosomes.length; i++) {
+            chromosomes[i] = new Show(chromosomesList.get(i).name,skin);
         }
 
-        for (int i = 0; i < rows.length; i++) {
-            String name = customBotList.get(i).getName();
-            String sp = customBotList.get(i).allSavedPepole+"";
-            String ef = customBotList.get(i).allExtinguishedFire+"";
-            if(sp.length() == 1) {
-                sp+=" ";
-            }
-            if(ef.length() == 1) {
-                ef+=" ";
-            }
-            String space = "";
-            for (int j = 0; j < 14-name.length(); j++) {
-                space+=" ";
-            }
-            scrollTable.add(new CheckBox("",skin));
+        setItems(bots);
 
-            rows[i] = new Label("  "+name+space+sp+"     "+ef,skin);
-            scrollTable.add(rows[i]);
-            scrollTable.row();
-        }
-
-
-
-        scrollTable.setBounds(-490,113,200,30);
+        scrollTable.setBounds(X,Y,200,0);
 
         final ScrollPane scroller = new ScrollPane(scrollTable);
 
-        scroller.setBounds(-490,113,200,30);
+        scroller.setBounds(X,Y,200,0);
 
         final Table table = new Table();
         table.setFillParent(true);
         table.add(scroller).fill().expand();
 
-        table.setBounds(-490,113,200,30);
+        table.setBounds(X,Y,200,0);
 
         this.stage.addActor(table);
+
+        box = new SelectBox<Show>(skin);
+
+        Array array = new Array(chromosomes);
+        box.setItems(array);
+        box.setPosition(255,Y-5-setChromosome.getHeight());
+        box.setMaxListCount(20);
+        box.pack();
+        box.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(box.getSelectedIndex()>0) {
+                    confirmSettingChromosome.setVisible(true);
+                }
+                return false;
+            }
+        });
+        box.setVisible(false);
+        stage.addActor(box);
+
+        setChromosome.setWidth(160);
+        setChromosome.add("Set new chromosome");
+        setChromosome.setPosition(25,Y-10-setChromosome.getHeight());
+        setChromosome.setVisible(false);
+        setChromosome.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(setChromosome.getClickListener().isPressed()) {
+                    box.setVisible(true);
+                    if(choicedOption == NOTHING) {
+                        choicedOption = SET_CHROMOSOME;
+                    }
+                }
+                return false;
+            }
+        });
+        stage.addActor(setChromosome);
+
+        saveBot.setWidth(60);
+        saveBot.add("Save");
+        saveBot.setPosition(185,Y-10-saveBot.getHeight());
+        saveBot.setVisible(false);
+        saveBot.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(saveBot.getClickListener().isPressed()) {
+                    try {
+                        DbHandler.getInstance().addBot(Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15]);
+                        chromosomesList.add(Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15].getChromosome());
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    if(choicedOption == NOTHING) {
+                        choicedOption = SAVE;
+                    }
+                }
+                return false;
+            }
+        });
+        stage.addActor(saveBot);
+
+        confirmSettingChromosome.setWidth(155+65);
+        confirmSettingChromosome.add("Confirm");
+        confirmSettingChromosome.setPosition(25,Y-11-confirmSettingChromosome.getHeight()*2);
+        confirmSettingChromosome.setVisible(false);
+        confirmSettingChromosome.addListener(new EventListener() {
+
+            @Override
+            public boolean handle(Event event) {
+                if(confirmSettingChromosome.getClickListener().isPressed()) {
+                    Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15].setChromosome(chromosomesList.get(box.getSelectedIndex()));
+                    setChromosome.setVisible(false);
+                    confirmSettingChromosome.setVisible(false);
+                    box.setVisible(false);
+                    saveBot.setVisible(false);
+                }
+                return false;
+            }
+        });
+        stage.addActor(confirmSettingChromosome);
+    }
+
+    public void setItems(Bot[] bots) {
+        System.out.println("Set items");
+        this.bots = bots;
+        scrollTable.reset();
+        for (int i = 0; i < 15; i++) {
+            scrollTable.add(new Label("",skin));
+            scrollTable.row();
+        }
+        for (int i = 0; i < bots.length; i++) {
+            final Button b = new Button(skin);
+            b.setColor(LIGHT_CYAN);
+            b.add(bots[i].getName());
+            b.addCaptureListener(new EventListener() {
+                @Override
+                public boolean handle(Event event) {
+                    if(b.getClickListener().isPressed()) {
+                        for (int j = 0; j < scrollTable.getChildren().size; j++) {
+                            scrollTable.getChildren().get(j).setColor(LIGHT_CYAN);
+                        }
+                        b.setColor(SELECTED);
+                        setChromosome.setVisible(true);
+                        saveBot.setVisible(true);
+                        choosedBotIndex = scrollTable.getChildren().indexOf(b,true);
+                        System.out.println(choosedBotIndex);
+                    }
+                    return false;
+                }
+            });
+            scrollTable.add(b);
+            scrollTable.row();
+        }
+    }
+
+    public Bot[] getItems() {
+        return bots;
+    }
+
+    public void updateChromosomes() {
+
     }
 
     public void render() {
@@ -128,9 +204,10 @@ public class BotsList implements Disposable, InputObserver {
         for (int i = 0; i < items.length; i++) {
             items[i].dispose();
         }
+        stage.dispose();
     }
 
-    class BotsListItem implements Disposable{
+    class BotsListItem implements Disposable {
         private Bot bot;
 
         public BotsListItem(Bot bot) {
@@ -251,4 +328,5 @@ public class BotsList implements Disposable, InputObserver {
         stage.scrolled(amount);
         return false;
     }
+
 }

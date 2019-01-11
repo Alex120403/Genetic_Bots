@@ -57,9 +57,12 @@ public class Menu implements Disposable {
         speed.setValue(Config.SPEED);
         stage.addActor(speed);
         stage.addActor(speedLabel);
-        javaHeap = new Label("Java heap: ???",skin);
-        javaHeap.setX(20);
-        javaHeap.setY(60);
+        javaHeap = new Label("Java heap:\n???",skin);
+        javaHeap.setWidth(100);
+        javaHeap.setWrap(true);
+        javaHeap.setX(1178);
+        javaHeap.setY(680);
+
         stage.addActor(javaHeap);
 
     }
@@ -69,7 +72,7 @@ public class Menu implements Disposable {
 
         stage.draw();
         timer++;
-        if(timer>=60) {
+        if(timer>=20) {
             timer = 0;
             javaHeap.setText("Java heap: "+Gdx.app.getJavaHeap()/1024/1024+"Mb");
         }

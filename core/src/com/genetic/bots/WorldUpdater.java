@@ -18,13 +18,14 @@ public class WorldUpdater extends Thread {
     @Override
     public void run() {
         super.run();
+        setPriority(10);
         try {
             while (true) {
                 world.update();
                 Thread.sleep(1024/Config.SPEED);
             }
         } catch (NullPointerException e) {
-
+            //e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

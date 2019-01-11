@@ -20,7 +20,7 @@ public class Bot implements Comparable<Bot>, Serializable {
         random = new Random();
     }
 
-    Gene[] genes;
+    Chromosome chromosome;
     BotInfo info;
     String name = "Bot "+(random.nextInt(90000)+10000);
 
@@ -32,8 +32,8 @@ public class Bot implements Comparable<Bot>, Serializable {
     int worldID = -1;
 
     // Can be created only by BotFactory
-    protected Bot(Gene[] genes) {
-        this.genes = genes;
+    protected Bot(Chromosome chromosome) {
+        this.chromosome = chromosome;
     }
 
     // Sets bot's world id
@@ -43,7 +43,7 @@ public class Bot implements Comparable<Bot>, Serializable {
 
     // Sets random value to one random gene
     protected void mutateOneGene() {
-        genes[random.nextInt(genes.length)] = new Gene((byte) random.nextInt(64));
+        chromosome.content[random.nextInt(chromosome.length)] = new Gene((byte) random.nextInt(64));
     }
 
     // Returns bots fitness func (based on rescued people(10 points) and extinguished fire(6 points))
@@ -64,8 +64,8 @@ public class Bot implements Comparable<Bot>, Serializable {
 
     public String getChromosomeForSQL() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < genes.length; i++) {
-            stringBuilder.append(genes[i].getValue()+",");
+        for (int i = 0; i < chromosome.length; i++) {
+            stringBuilder.append(chromosome.content[i].getValue()+",");
         }
         stringBuilder.deleteCharAt(stringBuilder.length()-1);
         return stringBuilder.toString();
@@ -82,8 +82,8 @@ public class Bot implements Comparable<Bot>, Serializable {
     }
 
     // Returns chromosome
-    public Gene[] getChromosome() {
-        return genes;
+    public Chromosome getChromosome() {
+        return chromosome;
     }
 
     // Returns health
@@ -125,7 +125,6 @@ public class Bot implements Comparable<Bot>, Serializable {
     */
     public void makeStep() {
         //TODO по 2 одинаковых бота(исправить)
-        operationFlag = 0;//operationFlag%genes.length;
         rotation = (short)(rotation%64);
         if((health)<=0){
             die(x,y);
@@ -134,26 +133,28 @@ public class Bot implements Comparable<Bot>, Serializable {
         boolean isStepped = false;
         while (!isStepped && operationsCount<10) {
             operationsCount++;
-            try {
-                isStepped = doOperation(genes[Math.abs(operationFlag%genes.length)].getValue());
-            } catch (ArrayIndexOutOfBoundsException e) {
-                for (int i = 0; i < Main.worlds.length; i++) {
-                    for (int j = 0; j < Main.worlds[i].getBots().length; j++) {
-                        if(this.equals(Main.worlds[i].getBots()[j])) {
-                            setWorldID(i);
-                        }
-                    }
-                }
-                System.out.println(name+" has incorrect world's id!");
-            }
+           // try {
+                isStepped = doOperation(chromosome.content[Math.abs(operationFlag%chromosome.length)].getValue());
+//            } catch (ArrayIndexOutOfBoundsException e) {
+//                for (int i = 0; i < Main.worlds.length; i++) {
+//                    for (int j = 0; j < Main.worlds[i].getBots().length; j++) {
+//                        if(this.equals(Main.worlds[i].getBots()[j])) {
+//                            setWorldID(i);
+//                        }
+//                    }
+//                }
+//                System.out.println(name+" has incorrect world's id!");
+//            }
         }
         health--;
     }
 
-
+    public void setChromosome(Chromosome newChromosome) {
+        chromosome = newChromosome;
+    }
 
     boolean doOperation(int operationId) {
-        operationFlag = operationFlag%genes.length;
+        operationFlag = operationFlag%chromosome.length;
         boolean isStepped = false;
         int deltaOperationFlag = 0;
         byte vectorX = 0, vectorY = 0;

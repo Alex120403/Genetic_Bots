@@ -23,6 +23,7 @@ public class WorldsPanelItem implements InputObserver {
     int Y_OFFSET = 570;
     int X_OFFSET = 30;
     WorldCreating wc;
+    long lastRenderTime;
 
     //TODO dispose
     // Textures initialization
@@ -106,14 +107,15 @@ public class WorldsPanelItem implements InputObserver {
                 click = false;
             }
         }
+        lastRenderTime = System.currentTimeMillis();
     }
 
     // Run if user clicks on this button
     public void click() {
-        if(linkedWorld == null) {
+        if(linkedWorld == null && System.currentTimeMillis()-lastRenderTime<50) {
             wc = new WorldCreating(this);
         }
-        else {
+        else if(System.currentTimeMillis()-lastRenderTime<50){
             wasSelected = true;
             Main.setSelectedWorldID(order);
         }

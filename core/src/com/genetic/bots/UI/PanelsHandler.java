@@ -8,10 +8,10 @@ import com.genetic.bots.Main;
 import com.genetic.bots.Paint;
 
 public class PanelsHandler implements InputObserver {   // Main panels class
-    private Panel worldsPanel;
-    private Panel worldStatePanel;
-    private Panel botsPanel;
-    private Panel selectedPanel;
+    private static Panel worldsPanel;
+    private static Panel worldStatePanel;
+    private static Panel botsPanel;
+    private static Panel selectedPanel;
     private Main main;
     private Texture header;
 //Todo dispose
@@ -90,5 +90,21 @@ public class PanelsHandler implements InputObserver {   // Main panels class
     // Returns object of Main.class
     public Main getMain() {
         return main;
+    }
+
+    public static Panel getWorldsPanel() {
+        return worldsPanel;
+    }
+
+    public static Panel getWorldStatePanel() {
+        return worldStatePanel;
+    }
+
+    public static Panel getBotsPanel() {
+        return botsPanel;
+    }
+
+    public static Panel getSelectedPanel() {
+        return selectedPanel;
     }
 }
