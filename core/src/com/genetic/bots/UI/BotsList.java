@@ -9,17 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.genetic.bots.*;
 import com.genetic.bots.BotsHandling.Bot;
 import com.genetic.bots.BotsHandling.Chromosome;
-import com.genetic.bots.InputHandler;
-import com.genetic.bots.InputObserver;
-import com.genetic.bots.Main;
-import com.genetic.bots.SQL.DbHandler;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class BotsList implements Disposable, InputObserver {
+public class BotsList implements Disposable, InputObserver{
     private BotsListItem[] items;
     static Skin skin = new Skin(Gdx.files.internal("data/skin/cloud-form-ui.json"));
     private static final int X = -490, Y = 145;
@@ -39,13 +36,13 @@ public class BotsList implements Disposable, InputObserver {
     public static final byte SET_CHROMOSOME = 0;
     public static final byte SAVE = 1;
 
-    public BotsList(final Bot[] bots) throws SQLException {
+    public BotsList(final Bot[] bots) {
         this.stage = new Stage();
         InputHandler.addToObservers(this);
 
         choicedOption = NOTHING;
 
-        final List<Chromosome> chromosomesList  = DbHandler.getInstance().getAllProducts();
+        final List<Chromosome> chromosomesList = IOHandler.readAll();
 
         Show[] chromosomes = new Show[chromosomesList.size()];
         for (int i = 0; i < chromosomes.length; i++) {
@@ -78,7 +75,7 @@ public class BotsList implements Disposable, InputObserver {
         box.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
-                if(box.getSelectedIndex()>0) {
+                if(box.getSelectedIndex()>-1) {
                     confirmSettingChromosome.setVisible(true);
                 }
                 return false;
@@ -114,10 +111,11 @@ public class BotsList implements Disposable, InputObserver {
             public boolean handle(Event event) {
                 if(saveBot.getClickListener().isPressed()) {
                     try {
-                        DbHandler.getInstance().addBot(Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15]);
+                        Chromosome ch = Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15].getChromosome();
+                        ch.name = Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15].getName();
+                        IOHandler.saveChromosome(ch);
                         chromosomesList.add(Main.worlds[Main.getSelectedWorldID()].getBots()[choosedBotIndex-15].getChromosome());
-
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if(choicedOption == NOTHING) {
@@ -151,7 +149,6 @@ public class BotsList implements Disposable, InputObserver {
     }
 
     public void setItems(Bot[] bots) {
-        System.out.println("Set items");
         this.bots = bots;
         scrollTable.reset();
         for (int i = 0; i < 15; i++) {
@@ -173,7 +170,6 @@ public class BotsList implements Disposable, InputObserver {
                         setChromosome.setVisible(true);
                         saveBot.setVisible(true);
                         choosedBotIndex = scrollTable.getChildren().indexOf(b,true);
-                        System.out.println(choosedBotIndex);
                     }
                     return false;
                 }
@@ -195,6 +191,7 @@ public class BotsList implements Disposable, InputObserver {
         stage.act();
         stage.draw();
     }
+
 
     /**
      * Releases all resources of this object.

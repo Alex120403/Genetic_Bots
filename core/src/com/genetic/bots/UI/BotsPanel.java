@@ -44,11 +44,7 @@ public class BotsPanel extends Panel {
         }
         else {
             if(Main.getSelectedWorldID()!=-1) {
-                try {
-                    botsList = new BotsList(Main.worlds[Main.getSelectedWorldID()].getBots());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                botsList = new BotsList(Main.worlds[Main.getSelectedWorldID()].getBots());
             }
         }
     }

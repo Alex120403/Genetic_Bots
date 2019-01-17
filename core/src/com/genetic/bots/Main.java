@@ -4,11 +4,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.genetic.bots.UI.BotInfo;
-import com.genetic.bots.UI.Menu;
-import com.genetic.bots.UI.PanelsHandler;
+import com.genetic.bots.UI.*;
 import com.genetic.bots.WorldsHandling.Cell;
 import com.genetic.bots.WorldsHandling.World;
+
+import java.util.ArrayList;
 
 
 public class Main extends ApplicationAdapter {
@@ -21,10 +21,10 @@ public class Main extends ApplicationAdapter {
 	private static int selectedWorldID = -1;
 
 
+
 	// Runs when program starts
 	@Override
 	public void create () {
-
 		menu = new Menu(this);
 		inputHandler = new InputHandler();
 		paint = new Paint();

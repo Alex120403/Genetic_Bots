@@ -31,6 +31,8 @@ public class Config {
 
     public static boolean IS_DEVELOPER_MODE_ENABLED = true;
 
+    public static boolean LANGUAGE_ENGLISH = true;
+
     private Config() {
 
     }

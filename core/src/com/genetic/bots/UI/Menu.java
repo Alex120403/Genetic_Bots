@@ -20,16 +20,13 @@ public class Menu implements Disposable {
     UIStage stage;
     Main main;
     int timer = 0;
-    Texture hint;
 
     @Override
     public void dispose() {
         stage.dispose();
-        hint.dispose();
     }
     public Menu(final Main main) {
         stage = new UIStage();
-        hint = new Texture(Gdx.files.internal("previewHint.png"));
         this.main = main;
         Skin skin = new Skin(Gdx.files.internal("data/skin/cloud-form-ui.json"));
         speed = new Slider(0,11,1,false,skin);

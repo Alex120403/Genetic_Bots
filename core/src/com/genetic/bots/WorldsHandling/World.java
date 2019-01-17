@@ -1,14 +1,11 @@
 package com.genetic.bots.WorldsHandling;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.genetic.bots.*;
 import com.genetic.bots.BotsHandling.Bot;
 import com.genetic.bots.BotsHandling.BotFactory;
 import com.genetic.bots.UI.*;
 
-import java.sql.SQLException;
-import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -151,6 +148,7 @@ public class World implements Disposable {
         if(newBotsArrayList == null) {
             copyBestBots();
         }
+        bubbleSorter();
         graph.add((float)bots[0].getFitnessFunc());
         for (byte i = 0; i < bots.length; i++) {
             bots[i] = botFactory.generateByBotsChromosome(newBotsArrayList.get(i));

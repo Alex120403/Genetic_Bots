@@ -14,7 +14,7 @@ import java.util.Random;
 public class WorldsPanelItem implements InputObserver {
     private static final Texture createWorld, world, flash,startIcon,pause,delete,drawHint,overload,rendering;
     private Texture icon;
-    private int order,populations;
+    public int order,populations;
     private long bestFitnessFuncOfAllTime;
     private boolean visible,flashing,click,start;
     private static boolean wasSelected;

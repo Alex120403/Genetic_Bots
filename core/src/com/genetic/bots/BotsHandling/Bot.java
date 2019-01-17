@@ -124,27 +124,15 @@ public class Bot implements Comparable<Bot>, Serializable {
       which have an information about next operation.
     */
     public void makeStep() {
-        //TODO по 2 одинаковых бота(исправить)
         rotation = (short)(rotation%64);
-        if((health)<=0){
+        if((health)<=1){
             die(x,y);
         }
         byte operationsCount = 0;
         boolean isStepped = false;
         while (!isStepped && operationsCount<10) {
             operationsCount++;
-           // try {
-                isStepped = doOperation(chromosome.content[Math.abs(operationFlag%chromosome.length)].getValue());
-//            } catch (ArrayIndexOutOfBoundsException e) {
-//                for (int i = 0; i < Main.worlds.length; i++) {
-//                    for (int j = 0; j < Main.worlds[i].getBots().length; j++) {
-//                        if(this.equals(Main.worlds[i].getBots()[j])) {
-//                            setWorldID(i);
-//                        }
-//                    }
-//                }
-//                System.out.println(name+" has incorrect world's id!");
-//            }
+            isStepped = doOperation(chromosome.content[Math.abs(operationFlag%chromosome.length)].getValue());
         }
         health--;
     }
