@@ -5,13 +5,10 @@ public class Config {
     public static final int DEFAULT_SPEED = 4;
     public static int SPEED = DEFAULT_SPEED;
 
-    private static final int DEFAULT_BOTS_COUNT = 32;
+    private static final int DEFAULT_BOTS_COUNT = 64;
     public static int BOTS_COUNT = DEFAULT_BOTS_COUNT;
 
-    private static final float DEFAULT_NUMBER_OF_MUTATIONS = 1/8;
-    public static float MUTATE_PERCENTS = DEFAULT_NUMBER_OF_MUTATIONS;
-
-    private static final float DEFAULT_CHANCE_TO_MUTATE_ANOTHER_ONE_GENE = 1/8;
+    private static final float DEFAULT_CHANCE_TO_MUTATE_ANOTHER_ONE_GENE = 0.8f;
     public static float CHANCE_TO_MUTATE_ANOTHER_ONE_GENE = DEFAULT_CHANCE_TO_MUTATE_ANOTHER_ONE_GENE;
 
     private static final float DEFAULT_DEGREE_OF_WALLS = 0.1f;
@@ -30,8 +27,6 @@ public class Config {
     public static final int MAP_HEIGHT = 24;
 
     public static boolean IS_DEVELOPER_MODE_ENABLED = true;
-
-    public static boolean LANGUAGE_ENGLISH = true;
 
     private Config() {
 

@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.genetic.bots.Main;
 import com.genetic.bots.TextFormat;
+import com.genetic.bots.UI.BotBehavior;
 import com.genetic.bots.UI.BotInfo;
+import com.genetic.bots.UI.WorldStatePanel;
 import com.genetic.bots.WorldsHandling.Cell;
 import com.genetic.bots.WorldsHandling.World;
 
@@ -117,8 +119,8 @@ public class Bot implements Comparable<Bot>, Serializable {
 
     /*
       Main bot method.
-      Operations "Move", "Interact" breaks operations cycle.
-      If operations count > 10, operations cycle will be breaked.
+      Operations "Move", "Interact" breaks operations loop.
+      If operations count > 10, operations loop will break.
       Each step removes 1 health point. If health value is lower then 1, bot will die.
       Every operation changes operation flag. Operation flag - number of gene,
       which have an information about next operation.
@@ -132,7 +134,8 @@ public class Bot implements Comparable<Bot>, Serializable {
         boolean isStepped = false;
         while (!isStepped && operationsCount<10) {
             operationsCount++;
-            isStepped = doOperation(chromosome.content[Math.abs(operationFlag%chromosome.length)].getValue());
+            isStepped = doOperation(chromosome.content[operationFlag%chromosome.length].getValue());
+
         }
         health--;
     }
@@ -141,8 +144,11 @@ public class Bot implements Comparable<Bot>, Serializable {
         chromosome = newChromosome;
     }
 
-    boolean doOperation(int operationId) {
+    private boolean doOperation(int operationId) {
         operationFlag = operationFlag%chromosome.length;
+        if(Main.worlds[worldID].bestBot.equals(this) && Main.worlds[worldID].equals(Main.worlds[Main.getSelectedWorldID()])) {
+            WorldStatePanel.operationFlag = operationFlag;
+        }
         boolean isStepped = false;
         int deltaOperationFlag = 0;
         byte vectorX = 0, vectorY = 0;
@@ -327,7 +333,18 @@ public class Bot implements Comparable<Bot>, Serializable {
             deltaOperationFlag++;
         }
         else if(operationId<64) {  // Безусловный переход
-            deltaOperationFlag+=operationId;
+            deltaOperationFlag=operationId;
+        }
+        if(Main.worlds[worldID].bestBot.equals(this) && Main.worlds[worldID].equals(Main.worlds[Main.getSelectedWorldID()])) {
+            if(operationId>=24) {
+                BotBehavior.vectorX = 0;
+                BotBehavior.vectorY = 0;
+            }
+            else {
+                BotBehavior.vectorX = vectorX;
+                BotBehavior.vectorY = vectorY;
+            }
+
         }
         operationFlag+=deltaOperationFlag;
         return isStepped;

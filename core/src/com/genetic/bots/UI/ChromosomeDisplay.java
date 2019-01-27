@@ -78,7 +78,7 @@ public class ChromosomeDisplay implements Disposable {
 
     // Lights current bot's gene
     public void drawFlag() {
-        int of = (Main.worlds[Main.getSelectedWorldID()].bestBot.getOperationFlag())%Main.worlds[Main.getSelectedWorldID()].bestBot.getChromosome().length;
+        int of = (WorldStatePanel.operationFlag)%Main.worlds[Main.getSelectedWorldID()].bestBot.getChromosome().length;
         Paint.draw(flag, X_ALIGNMENT+(of%8)*Cell.CELL_SIZE+3,Y_ALIGNMENT-(of/8)*Cell.CELL_SIZE-20);
     }
 }
