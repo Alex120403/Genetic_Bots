@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.genetic.bots.*;
 import com.genetic.bots.BotsHandling.Bot;
 import com.genetic.bots.BotsHandling.BotFactory;
+import com.genetic.bots.BotsHandling.Chromosome;
+import com.genetic.bots.BotsHandling.Gene;
 import com.genetic.bots.UI.*;
 
 import java.util.ArrayList;
@@ -142,14 +144,33 @@ public class World implements Disposable {
         }
     }
 
+    synchronized void crossover(Bot[] bestBots) {
+        BotFactory botFactory = new BotFactory();
+        newBotsArrayList = new ArrayList<Bot>();
+        for (int i = 0; i < bestBots.length; i+=2) {
+            Bot parent1 = bestBots[i];
+            Bot parent2 = bestBots[i+1];
+            Gene[] newContent = new Gene[parent1.getChromosome().length/2+parent2.getChromosome().length/2];
+            for (int j = 0; j < newContent.length; j++) {
+                if (j%2 == 0) {
+                    newContent[j] = parent1.getChromosome().content[j];
+                }
+                else {
+                    newContent[j] = parent2.getChromosome().content[j];
+
+                }
+            }
+            for (int j = 0; j < 8; j++) {
+                newBotsArrayList.add(botFactory.generateByChromosome(new Chromosome(newContent,"Bot Child")));
+            }
+        }
+    }
 
     synchronized void nextPopulation() {
         BotFactory botFactory = new BotFactory();
-        if(newBotsArrayList == null) {
-            copyBestBots();
-        }
         bubbleSorter();
-        graph.add((float)bots[0].getFitnessFunc());
+        graph.add((float)bestBot.getFitnessFunc());
+        crossover(copyBestBots());
         for (byte i = 0; i < bots.length; i++) {
             bots[i] = botFactory.generateByBotsChromosome(newBotsArrayList.get(i));
             if(i%8==0) {
@@ -184,18 +205,14 @@ public class World implements Disposable {
 
     }
 
-    void copyBestBots() {
+    Bot[] copyBestBots() {
 
-        Bot[] bestBots = new Bot[bots.length/8];
+        Bot[] bestBots = new Bot[bots.length/4];
         bubbleSorter();
-
-        newBotsArrayList = new ArrayList<Bot>();
         for (byte i = 0; i < bestBots.length; i++) {
             bestBots[i] = bots[i];
         }
-        for (byte i = 0; i < bestBots.length*8; i++) {
-            newBotsArrayList.add(bestBots[i/8]);
-        }
+        return bestBots;
     }
 
     public synchronized void update() {
