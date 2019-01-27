@@ -15,6 +15,7 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 public class Menu implements Disposable {
     Slider speed;
+    Button start,stop,pause;
     Label speedLabel,javaHeap;
     UIStage stage;
     Main main;
