@@ -146,7 +146,7 @@ public class Bot implements Comparable<Bot>, Serializable {
 
     private boolean doOperation(int operationId) {
         operationFlag = operationFlag%chromosome.length;
-        if(Main.worlds[worldID].bestBot.equals(this) && Main.worlds[worldID].equals(Main.worlds[Main.getSelectedWorldID()])) {
+        if(Main.getSelectedWorldID() != -1 && Main.worlds[worldID].bestBot.equals(this) && Main.worlds[worldID].equals(Main.worlds[Main.getSelectedWorldID()])) {
             WorldStatePanel.operationFlag = operationFlag;
         }
         boolean isStepped = false;
